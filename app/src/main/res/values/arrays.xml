@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="display_mode_array" >
+        <item>@string/epd_auto</item>
+        <item>@string/epd_overlay</item>
+        <item>@string/epd_full_gc16</item>
+        <item>@string/epd_full_gl16</item>
+        <item>@string/epd_full_glr16</item>
+        <item>@string/epd_full_gld16</item>
+        <item>@string/epd_full_gcc16</item>
+        <item>@string/epd_part_gc16</item>
+        <item>@string/epd_part_gl16</item>
+        <item>@string/epd_part_glr16</item>
+        <item>@string/epd_part_gld16</item>
+        <item>@string/epd_part_gcc16</item>
+        <item>@string/epd_a2</item>
+        <item>@string/epd_du</item>
+        <item>@string/epd_du4</item>
+        <item>@string/epd_a2_enter</item>
+        <item>@string/epd_reset</item>
+    </string-array>
+</resources>

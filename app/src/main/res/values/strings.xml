@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">PineNote Notebook</string>
+
+    <!-- Spinner -->
+    <string name="select_display_mode">Select Display Mode</string>
+    <!-- Spinner option strings -->
+    <string name="epd_auto">EPD_AUTO</string>
+    <string name="epd_overlay">EPD_OVERLAY</string>
+    <string name="epd_full_gc16">EPD_FULL_GC16</string>
+    <string name="epd_full_gl16">EPD_FULL_GL16</string>
+    <string name="epd_full_glr16">EPD_FULL_GLR16</string>
+    <string name="epd_full_gld16">EPD_FULL_GLD16</string>
+    <string name="epd_full_gcc16">EPD_FULL_GCC16</string>
+    <string name="epd_part_gc16">EPD_PART_GC16</string>
+    <string name="epd_part_gl16">EPD_PART_GL16</string>
+    <string name="epd_part_glr16">EPD_PART_GLR16</string>
+    <string name="epd_part_gld16">EPD_PART_GLD16</string>
+    <string name="epd_part_gcc16">EPD_PART_GCC16</string>
+    <string name="epd_a2">EPD_A2</string>
+    <string name="epd_du">EPD_DU</string>
+    <string name="epd_du4">EPD_DU4</string>
+    <string name="epd_a2_enter">EPD_A2_ENTER</string>
+    <string name="epd_reset">EPD_RESET</string>
+
+    <!-- Button labels -->
+    <string name="button_clear_screen">Clear Screen</string>
+</resources>
