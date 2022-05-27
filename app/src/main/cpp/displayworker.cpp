@@ -38,6 +38,7 @@ void DisplayWorker::onPenEvent(pen_event_t *pen_event) {
 void DisplayWorker::run() {
     ALOGD("DisplayWorker::run()");
     while (true) {
+        // TODO: Implement a blocking queue
         pen_event_queue_mutex.lock();
         if (pen_event_queue.empty()) {
             pen_event_queue_mutex.unlock();
