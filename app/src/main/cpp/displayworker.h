@@ -4,8 +4,8 @@
 #ifndef DISPLAYWORKER_H
 #define DISPLAYWORKER_H
 
-#include "pinenotelib.h"
 #include "const.h"
+#include "pinenotelib.h"
 
 #include <queue>
 #include <fcntl.h>
@@ -18,20 +18,22 @@
 #include <android/log.h>
 #include <thread>
 
+#define PEN_SIZE 2
+
 class DisplayWorker {
 public:
-    DisplayWorker(PineNoteLib *lib);
+    DisplayWorker();
 
     ~DisplayWorker();
 
-    void addPenEvent(pen_event_t *pen_event);
+    void onPenEvent(pen_event_t *pen_event);
 
 private:
-    PineNoteLib *pnl;
+    PineNoteLib *mPineNoteLib;
 
     std::queue<pen_event_t *> pen_event_queue{};
     std::mutex pen_event_queue_mutex;
-    std::atomic_bool should_stop{};
+
     std::thread display_thread;
 
     void run();

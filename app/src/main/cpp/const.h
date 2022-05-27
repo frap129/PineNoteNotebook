@@ -5,10 +5,11 @@
 #define CONST_H
 
 enum pen_action {
+    PEN_NOTHING,
     PEN_UP,
     PEN_DOWN,
     PEN_MOVE,
-    PEN_NO_ACTION
+    EXIT_WORKER,
 };
 
 struct pen_event_t {
@@ -34,6 +35,7 @@ struct pen_event_t {
 #define EBC_SEND_OSD_BUFFER        (0x7007)
 
 enum panel_refresh_mode {
+    EPD_NULL = -1,
     EPD_AUTO = 0,
     EPD_OVERLAY = 1,
     EPD_FULL_GC16 = 2,
@@ -48,9 +50,12 @@ enum panel_refresh_mode {
     EPD_PART_GCC16 = 11,
     EPD_A2 = 12,
     EPD_DU = 13,
-    EPD_DU4 = 14,
-    EPD_A2_ENTER = 15,
-    EPD_RESET = 16,
+    EPD_RESET = 14,
+    EPD_SUSPEND = 15,
+    EPD_RESUME = 16,
+    EPD_POWER_OFF = 17,
+    EPD_PART_EINK = 18,
+    EPD_FULL_EINK = 19,
 };
 
 struct ebc_buf_info_t {

@@ -1,5 +1,7 @@
 package net.mulliken.pinenotenotebook;
 
+import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,30 +26,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         displayModeSelector.setAdapter(adapter);
         displayModeSelector.setOnItemSelectedListener(this);
-
-        // Set up the clear screen button
-        Button clearScreenButton = findViewById(R.id.button_clear_screen);
-        clearScreenButton.setOnClickListener(v -> {
-            Toast.makeText(getApplicationContext(), "Cleared screen", Toast.LENGTH_SHORT).show();
-            NoteJNI noteJNI = NoteJNI.getInstance();
-
-            noteJNI.clearDisplay();
-        });
     }
 
     // Handle the selection of the dropdown
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getId() == R.id.display_mode_selector) {
-            String displayMode = parent.getItemAtPosition(position).toString();
-
-            NoteJNI noteJNI = NoteJNI.getInstance();
-            try {
-                noteJNI.setDisplayMode(displayMode);
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "Display mode invalid", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if (parent.getId() == R.id.display_mode_selector) {
+//            String displayMode = parent.getItemAtPosition(position).toString();
+//
+//            NoteJNI noteJNI = NoteJNI.getInstance();
+//            try {
+//                noteJNI.setDisplayMode(displayMode);
+//            } catch (NumberFormatException e) {
+//                Toast.makeText(this, "Display mode invalid", Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
 
     @Override

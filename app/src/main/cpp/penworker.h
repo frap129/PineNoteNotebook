@@ -1,7 +1,6 @@
 #ifndef PENWORKER_H
 #define PENWORKER_H
 
-#include "pinenotelib.h"
 #include "const.h"
 
 #include <iostream>
@@ -14,6 +13,7 @@
 #include <fcntl.h>
 #include <android/log.h>
 #include <thread>
+#include <unistd.h>
 
 class PenWorker {
 public:
@@ -26,11 +26,12 @@ public:
 private:
     std::mutex listener_mutex;
     std::vector<std::function<void(pen_event_t *)>> listeners;
-    std::atomic<bool> shouldStop{};
     std::thread penWorkerThread;
-    pen_event_t *pen_state{};
+    fd_set fds{};
+    int event_fd;
+    int pipefd[2]{};
 
-    void run(const std::string &handlerPath);
+    void run();
 };
 
 #endif //PENWORKER_H

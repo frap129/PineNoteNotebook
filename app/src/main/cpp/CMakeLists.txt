@@ -22,7 +22,7 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        pinenotenotebook.cpp
+        pinenote_jni.cpp
         pinenotelib.cpp
         penworker.cpp
         displayworker.cpp)
