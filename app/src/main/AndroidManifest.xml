@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="net.mulliken.pinenotenotebook"
-    android:sharedUserId="android.uid.system" >
+    package="net.mulliken.pinenotenotebook">
 
     <uses-permission
         android:name="android.hardware.usb.host"
