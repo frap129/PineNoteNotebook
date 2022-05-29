@@ -1,0 +1,36 @@
+android_app {
+    name: "EinkNotebook",
+    product_specific: true,
+    sdk_version: "current",
+    required: ["libpinenote"],
+
+    resource_dirs: ["res"],
+
+    srcs: ["java/**/*.kt",
+        "java/**/*.java"
+    ],
+
+    static_libs: [
+        "androidx.appcompat_appcompat",
+        "androidx-constraintlayout_constraintlayout",
+        "androidx.core_core",
+        "androidx.fragment_fragment",
+        "androidx.navigation_navigation-fragment",
+        "androidx.navigation_navigation-ui",
+        "com.google.android.material_material",
+    ],
+}
+
+cc_library {
+    name: "libpinenote",
+    host_supported: false,
+
+    srcs: ["cpp/*.cpp"],
+
+    shared_libs: ["liblog"],
+
+    cflags: [
+        "-Wno-error-unused-parameter",
+        "-fexceptions"
+    ],
+}
