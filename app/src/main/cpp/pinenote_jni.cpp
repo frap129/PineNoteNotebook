@@ -91,7 +91,12 @@ JNIEXPORT void JNICALL
 Java_net_mulliken_pinenotenotebook_NoteView_nativeOnSizeChanged(JNIEnv *env, jobject thiz,
                                                                 jint left, jint top, jint right,
                                                                 jint bottom) {
-    // TODO: implement nativeOnSizeChanged()
+    if (pineNotePen == nullptr) {
+        pineNotePen = PineNoteLib::getInstance();
+    }
+
+    // Invert x and y so the display is correct.
+    pineNotePen->setDrawArea(bottom, left, top, right);
 }
 
 extern "C"
