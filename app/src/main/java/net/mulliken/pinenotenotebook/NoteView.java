@@ -3,12 +3,16 @@ package net.mulliken.pinenotenotebook;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
 public class NoteView extends View {
+    private static final String TAG = "NoteView";
+    private static int displayHeight = 0;
+    private static int displayWidth = 0;
 
     static {
         System.loadLibrary("pinenote");
@@ -27,6 +31,12 @@ public class NoteView extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        // Get screen dimensions
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getDisplay().getMetrics(displayMetrics);
+        displayHeight = displayMetrics.heightPixels;
+        displayWidth = displayMetrics.widthPixels;
+
         nativeOnAttachedToWindow();
     }
 
@@ -42,19 +52,20 @@ public class NoteView extends View {
         super.onSizeChanged(w, h, old_width, old_height);
 
         // Get the orientation of the device
-        int orientation = getResources().getConfiguration().orientation;
+        int[] l = new int[2];
+        getLocationOnScreen(l);
+        int left = l[0];
+        int right = left + w;
 
-        int left = getLeft();
-        int top = getTop();
-        int right = getRight();
-        int bottom = getBottom();
+        // Android considers the top of the screen as 0, so we need to invert the y coordinates
+        int bottom = displayHeight - h - l[1];
+        int top = displayHeight - l[1];
 
-        Log.d("NoteView", "onSizeChanged:");
-        Log.d("NoteView", "  orientation: " + orientation);
-        Log.d("NoteView", "  left: " + left);
-        Log.d("NoteView", "  top: " + top);
-        Log.d("NoteView", "  right: " + right);
-        Log.d("NoteView", "  bottom: " + bottom);
+        Log.d(TAG, "onSizeChanged:");
+        Log.d(TAG, "  left: " + left);
+        Log.d(TAG, "  top: " + top);
+        Log.d(TAG, "  right: " + right);
+        Log.d(TAG, "  bottom: " + bottom);
 
         nativeOnSizeChanged(left, top, right, bottom);
     }
