@@ -31,8 +31,9 @@ public:
 private:
     PineNoteLib *mPineNoteLib;
 
-    std::queue<pen_event_t *> pen_event_queue{};
-    std::mutex pen_event_queue_mutex;
+    std::queue<pen_event_t *> equeue{};
+    std::mutex emutex;
+    std::condition_variable econd;
 
     std::thread display_thread;
 

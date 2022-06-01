@@ -24,13 +24,15 @@ android_app {
 cc_library {
     name: "libpinenote",
     host_supported: false,
+    product_specific: true,
 
     srcs: ["cpp/*.cpp"],
 
     shared_libs: ["liblog"],
+    header_libs: ["jni_headers"],
 
     cflags: [
         "-Wno-error-unused-parameter",
-        "-fexceptions"
+        "-fexceptions",
     ],
 }

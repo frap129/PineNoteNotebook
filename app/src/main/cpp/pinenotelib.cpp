@@ -196,7 +196,7 @@ void PineNoteLib::drawPixel(uint x, uint y, uint8_t color) const {
     color = ~color;
 
     // Try with the y-based offset
-    uint offset = (y - 1) * ebc_info.width + (x - 1);
+    uint offset = y * ebc_info.width + x;
 
     // Try with the x-based offset
 //    uint offset = x * ebc_info.height + y;

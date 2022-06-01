@@ -30,24 +30,20 @@ DisplayWorker::~DisplayWorker() {
 void DisplayWorker::onPenEvent(pen_event_t *pen_event) {
 //    ALOGD("DisplayWorker::onPenEvent()");
 
-    pen_event_queue_mutex.lock();
-    pen_event_queue.push(pen_event);
-    pen_event_queue_mutex.unlock();
+    std::unique_lock<std::mutex> lck{emutex};
+    equeue.push(pen_event);
+    econd.notify_one();
 }
 
 void DisplayWorker::run() {
     ALOGD("DisplayWorker::run()");
     while (true) {
-        // TODO: Implement a blocking queue
-        pen_event_queue_mutex.lock();
-        if (pen_event_queue.empty()) {
-            pen_event_queue_mutex.unlock();
-            continue;
-        }
-
-        pen_event_t *event = pen_event_queue.front();
-        pen_event_queue.pop();
-        pen_event_queue_mutex.unlock();
+        std::unique_lock<std::mutex> lck{emutex}; // Lock the mutex
+        econd.wait(lck, [this] { return !equeue.empty(); }); // Wait for a pen event to be
+                                                                     // added to the queue
+        pen_event_t *event = equeue.front();
+        equeue.pop();
+        lck.unlock();
 
         if (event->action == EXIT_WORKER) {
             break;
