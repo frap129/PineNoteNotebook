@@ -1,7 +1,6 @@
 package net.mulliken.pinenotenotebook;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -12,7 +11,6 @@ import androidx.annotation.Nullable;
 public class NoteView extends View {
     private static final String TAG = "NoteView";
     private static int displayHeight = 0;
-    private static int displayWidth = 0;
 
     static {
         System.loadLibrary("pinenote");
@@ -35,7 +33,6 @@ public class NoteView extends View {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getDisplay().getMetrics(displayMetrics);
         displayHeight = displayMetrics.heightPixels;
-        displayWidth = displayMetrics.widthPixels;
 
         nativeOnAttachedToWindow();
     }
