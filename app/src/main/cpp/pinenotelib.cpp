@@ -214,3 +214,16 @@ void PineNoteLib::drawPixel(uint x, uint y, uint8_t color) const {
         osd_buffer_base[offset] &= color;
     }
 }
+
+void PineNoteLib::drawShape(Shape& shape, unsigned int color) const {
+    Point p{};
+
+    for (unsigned int x = shape.x_min(); x <= shape.x_max(); x++) {
+        for (unsigned int y = shape.y_min(); y <= shape.y_max(); y++) {
+            p = {x, y};
+            if (shape.contains(p)) {
+                drawPixel(x, y, color);
+            }
+        }
+    }
+}

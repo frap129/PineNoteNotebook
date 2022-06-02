@@ -17,7 +17,7 @@ void ThrowJNIException(const char *eFile, int eLine, const char *eMessage) {
 
     std::string eMsg = "JNIException !\n ";
     eMsg += "   File \t\t: " + std::string(eFile) + "\n";
-    eMsg += "   Line \t\t: " + std::to_string(eLine) + "\n";
+    eMsg += "   LineSegment \t\t: " + std::to_string(eLine) + "\n";
     eMsg += "   Message \t: " + std::string(eMessage) + "\n";
 
     jclass tClass = mEnv->FindClass("java/lang/Exception");

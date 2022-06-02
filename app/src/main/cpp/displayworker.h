@@ -6,6 +6,7 @@
 
 #include "const.h"
 #include "pinenotelib.h"
+#include "raster_utils.h"
 
 #include <queue>
 #include <fcntl.h>
@@ -18,7 +19,7 @@
 #include <android/log.h>
 #include <thread>
 
-#define PEN_SIZE 2
+using namespace std;
 
 class DisplayWorker {
 public:
@@ -31,11 +32,13 @@ public:
 private:
     PineNoteLib *mPineNoteLib;
 
-    std::queue<pen_event_t *> equeue{};
-    std::mutex emutex;
-    std::condition_variable econd;
+    queue<pen_event_t *> equeue{};
+    mutex emutex;
+    condition_variable econd;
 
-    std::thread display_thread;
+    thread display_thread;
+
+    pen_event_t prev_event{};
 
     void run();
 };

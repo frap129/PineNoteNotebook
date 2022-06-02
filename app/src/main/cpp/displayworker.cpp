@@ -49,8 +49,33 @@ void DisplayWorker::run() {
             break;
         }
 
+        if (event->action == PEN_DOWN) {
+            Point p{event->x, event->y};
+            Circle circle(p, PEN_RADIUS);
+
+            mPineNoteLib->drawShape(circle, PEN_COLOR);
+
+            prev_event = *event;
+        }
+
         if (event->action == PEN_MOVE) {
-            mPineNoteLib->drawPoint(event->x, event->y, PEN_RADIUS, PEN_COLOR);
+            Point prev_p{prev_event.x, prev_event.y};
+            Point p{event->x, event->y};
+
+            LineSegment line(prev_p, p);
+
+            Rectangle rectangle(&line, PEN_RADIUS);
+
+            mPineNoteLib->drawShape(rectangle, PEN_COLOR);
+
+            prev_event = *event;
+        }
+
+        if (event->action == PEN_UP) {
+            Point p{event->x, event->y};
+            Circle circle(p, PEN_RADIUS);
+
+            mPineNoteLib->drawShape(circle, PEN_COLOR);
         }
     }
 }

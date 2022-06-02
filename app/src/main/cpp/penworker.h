@@ -15,21 +15,25 @@
 #include <thread>
 #include <unistd.h>
 
+using namespace std;
+
 class PenWorker {
 public:
     PenWorker();
 
     ~PenWorker();
 
-    void registerListener(const std::function<void(pen_event_t *)> &listener);
+    void registerListener(const function<void(pen_event_t *)> &listener);
 
 private:
-    std::mutex listener_mutex;
-    std::vector<std::function<void(pen_event_t *)>> listeners;
-    std::thread penWorkerThread;
+    mutex listener_mutex;
+    vector<function<void(pen_event_t *)>> listeners;
+    thread penWorkerThread;
     fd_set fds{};
     int event_fd;
     int pipefd[2]{};
+
+    unsigned int prev_pressure = 0;
 
     void run();
 };

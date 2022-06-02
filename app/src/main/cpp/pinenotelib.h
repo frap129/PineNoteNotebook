@@ -5,6 +5,7 @@
 #define PINENOTELIB_H
 
 #include "const.h"
+#include "raster_utils.h"
 
 #include <mutex>
 #include <math.h>
@@ -64,6 +65,8 @@ public:
     void flashOverlay();
 
     void drawPixel(uint x, uint y, uint8_t color) const;
+
+    void drawShape(Shape& shape, unsigned int color) const;
 
 private:
     static PineNoteLib *instance;
