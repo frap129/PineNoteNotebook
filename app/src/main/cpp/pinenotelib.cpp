@@ -69,11 +69,6 @@ PineNoteLib::~PineNoteLib() {
 }
 
 void PineNoteLib::drawPoint(uint x, uint y, int radius, uint color) {
-    // Exit early if draw point is out of bounds
-    if (x < display_x1 || x > display_x2 || y < display_y1 || y > display_y2) {
-        return;
-    }
-
     uint fromX = x - radius;
     uint fromY = y - radius;
     uint toX = x + radius;
@@ -185,6 +180,11 @@ void PineNoteLib::flashOverlay() {
 void PineNoteLib::drawPixel(uint x, uint y, uint8_t color) const {
 //    ALOGD("PineNoteLib::drawPixel()");
     if (x >= ebc_info.width || y >= ebc_info.height) {
+        return;
+    }
+
+    // Exit early if draw point is out of bounds
+    if (x < display_x1 || x > display_x2 || y < display_y1 || y > display_y2) {
         return;
     }
 

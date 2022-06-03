@@ -78,7 +78,7 @@ void PenWorker::run() {
     int r;
     int fd_count = -1;
 
-    auto pen_state = new pen_event_t();
+    pen_event_t pen_state{};
     while (true) {
         FD_ZERO(&fds);
         FD_SET(pipefd[0], &fds);
@@ -111,39 +111,37 @@ void PenWorker::run() {
 
         // Check the event type
         if (event.type == EV_SYN) {
-            if (prev_pressure == 0 && pen_state->pressure > 0) {
-                pen_state->action = PEN_DOWN;
-            } else if (prev_pressure > 0 && pen_state->pressure == 0) {
-                pen_state->action = PEN_UP;
+            if (pen_state.pressure > PRESSURE_THRESHOLD && prev_pressure > PRESSURE_THRESHOLD) {
+                pen_state.action = PEN_MOVE;
+            } else if (pen_state.pressure > PRESSURE_THRESHOLD && prev_pressure == 0) {
+                pen_state.action = PEN_DOWN;
+            } else if (pen_state.pressure == 0 && prev_pressure > PRESSURE_THRESHOLD) {
+                pen_state.action = PEN_UP;
             } else {
-                pen_state->action = PEN_MOVE;
+                pen_state.action = PEN_NOTHING;
             }
 
-            listener_mutex.lock();
+            lock_guard<mutex> lock(listener_mutex);
             for (auto &listener: listeners) {
                 // Send the data to the listener
-                auto *listener_event = new pen_event_t;
-                listener_event->x = pen_state->x;
-                listener_event->y = pen_state->y;
-                listener_event->pressure = pen_state->pressure;
-                listener_event->action = pen_state->action;
+                pen_event_t listener_event{};
+                listener_event.x = pen_state.x;
+                listener_event.y = pen_state.y;
+                listener_event.pressure = pen_state.pressure;
+                listener_event.action = pen_state.action;
                 listener(listener_event);
             }
-            listener_mutex.unlock();
-
-            // Reset the pen state
-            pen_state = new pen_event_t();
         } else if (event.type == EV_ABS) {
             switch (event.code) {
                 case ABS_X:
-                    pen_state->x = event.value;
+                    pen_state.x = event.value;
                     break;
                 case ABS_Y:
-                    pen_state->y = event.value;
+                    pen_state.y = event.value;
                     break;
                 case ABS_PRESSURE:
-                    prev_pressure = pen_state->pressure;
-                    pen_state->pressure = event.value;
+                    prev_pressure = pen_state.pressure;
+                    pen_state.pressure = event.value;
                     break;
                 default:
                     break;
@@ -152,7 +150,7 @@ void PenWorker::run() {
     }
 }
 
-void PenWorker::registerListener(const function<void(pen_event_t *)> &listener) {
+void PenWorker::registerListener(const function<void(pen_event_t)> &listener) {
     ALOGD("PenWorker::registerListener()");
 
     listener_mutex.lock();

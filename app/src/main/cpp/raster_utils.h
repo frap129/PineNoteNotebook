@@ -2,12 +2,15 @@
 #define PINENOTE_LIB_RASTER_UTILS_H
 
 #include "utils.h"
+#include "const.h"
 
+#include <android/log.h>
 #include <algorithm>
 #include <vector>
 #include <string>
 #include <limits>
 #include <stdexcept>
+#include <cmath>
 
 using namespace std;
 
@@ -29,11 +32,9 @@ class LineSegment : public Shape {
 public:
     LineSegment(Point one, Point two);
 
-    static LineSegment *from(Point one, double length, double slope);
-
-    vector<Point> as_points() const;
-
     bool contains(Point point) override;
+
+    vector<Point> as_points();
 
     unsigned int x_min() override;
 
@@ -92,28 +93,6 @@ private:
     double y_center;
 
     double radius;
-};
-
-class Rectangle : public Shape {
-public:
-    Rectangle(const LineSegment *line, unsigned int width);
-
-    bool contains(Point point) override;
-
-    unsigned int x_min() override;
-    unsigned int x_max() override;
-    unsigned int y_min() override;
-    unsigned int y_max() override;
-
-private:
-    double perpendicular_slope() const;
-
-    const LineSegment *center_line;
-    LineSegment top_line{{}, {}};
-    LineSegment bottom_line{{}, {}};
-    LineSegment left_line{{}, {}};
-    LineSegment right_line{{}, {}};
-    double width;
 };
 
 #endif // PINENOTE_LIB_RASTER_UTILS_H

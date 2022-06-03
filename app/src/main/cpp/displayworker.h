@@ -27,12 +27,12 @@ public:
 
     ~DisplayWorker();
 
-    void onPenEvent(pen_event_t *pen_event);
+    void onPenEvent(pen_event_t pen_event);
 
 private:
     PineNoteLib *mPineNoteLib;
 
-    queue<pen_event_t *> equeue{};
+    queue<pen_event_t> equeue{};
     mutex emutex;
     condition_variable econd;
 

@@ -6,14 +6,20 @@
 #define PINENOTE_LIB_UTILS_H
 
 #include <stdexcept>
+#include <typeinfo>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
 template<typename Target, typename Source>
 Target narrow_cast(Source var) {
     auto r = static_cast<Target> (var);
-    if (static_cast<Source> (r) != var)
-        throw runtime_error("narrow_cast<>() failed");
+    if (static_cast<Source> (r) != var) {
+        stringstream ss{};
+        ss << "Narrowing conversion from " << typeid(Source).name() << " to " << typeid(Target).name() << " failed";
+        throw runtime_error(ss.str());
+    }
 
     return r;
 }

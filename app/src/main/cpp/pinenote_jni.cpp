@@ -44,7 +44,7 @@ void enablePen() {
         displayWorker = new DisplayWorker();
 
         // We will assume that if it is not null, it is already initialized.
-        penWorker->registerListener([](pen_event_t *event) {
+        penWorker->registerListener([](pen_event_t event) {
             displayWorker->onPenEvent(event);
         });
     }
@@ -52,8 +52,8 @@ void enablePen() {
 
 void disablePen() {
     if (displayWorker != nullptr) {
-        auto *event = new pen_event_t();
-        event->action = EXIT_WORKER;
+        pen_event_t event{};
+        event.action = EXIT_WORKER;
         displayWorker->onPenEvent(event);
 
         delete displayWorker;

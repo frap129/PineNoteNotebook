@@ -15,6 +15,8 @@
 #include <thread>
 #include <unistd.h>
 
+#define PRESSURE_THRESHOLD 10
+
 using namespace std;
 
 class PenWorker {
@@ -23,11 +25,11 @@ public:
 
     ~PenWorker();
 
-    void registerListener(const function<void(pen_event_t *)> &listener);
+    void registerListener(const function<void(pen_event_t)> &listener);
 
 private:
     mutex listener_mutex;
-    vector<function<void(pen_event_t *)>> listeners;
+    vector<function<void(pen_event_t)>> listeners;
     thread penWorkerThread;
     fd_set fds{};
     int event_fd;

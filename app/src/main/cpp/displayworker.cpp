@@ -18,8 +18,8 @@ DisplayWorker::DisplayWorker() {
 
 DisplayWorker::~DisplayWorker() {
     ALOGD("DisplayWorker::~DisplayWorker()");
-    auto *event = new pen_event_t();
-    event->action = EXIT_WORKER;
+    pen_event_t event{};
+    event.action = EXIT_WORKER;
     onPenEvent(event);
 
     if (display_thread.joinable()) {
@@ -27,7 +27,7 @@ DisplayWorker::~DisplayWorker() {
     }
 }
 
-void DisplayWorker::onPenEvent(pen_event_t *pen_event) {
+void DisplayWorker::onPenEvent(pen_event_t pen_event) {
 //    ALOGD("DisplayWorker::onPenEvent()");
 
     std::unique_lock<std::mutex> lck{emutex};
@@ -41,41 +41,51 @@ void DisplayWorker::run() {
         std::unique_lock<std::mutex> lck{emutex}; // Lock the mutex
         econd.wait(lck, [this] { return !equeue.empty(); }); // Wait for a pen event to be
                                                                      // added to the queue
-        pen_event_t *event = equeue.front();
+        pen_event_t event = equeue.front();
         equeue.pop();
         lck.unlock();
 
-        if (event->action == EXIT_WORKER) {
+        if (event.action == EXIT_WORKER)
             break;
-        }
 
-        if (event->action == PEN_DOWN) {
-            Point p{event->x, event->y};
+        if (event.action == PEN_NOTHING)
+            continue;
+
+        if (event.action == PEN_DOWN) {
+            Point p{event.x, event.y};
             Circle circle(p, PEN_RADIUS);
 
             mPineNoteLib->drawShape(circle, PEN_COLOR);
 
-            prev_event = *event;
-        }
+            prev_event = event;
+        } else if (event.action == PEN_MOVE) {
+            if (prev_event.x == 0 && prev_event.y == 0) {
+                prev_event = event;
+                continue;
+            }
 
-        if (event->action == PEN_MOVE) {
-            Point prev_p{prev_event.x, prev_event.y};
-            Point p{event->x, event->y};
+            if (event.x == prev_event.x && event.y == prev_event.y)
+                continue;
 
-            LineSegment line(prev_p, p);
+            Point p{prev_event.x, prev_event.y};
+            Point p2{event.x, event.y};
+            LineSegment line(p, p2);
+            for (auto point : line.as_points()) {
+                Circle circle(point, PEN_RADIUS);
+                mPineNoteLib->drawShape(circle, PEN_COLOR);
+            }
 
-            Rectangle rectangle(&line, PEN_RADIUS);
-
-            mPineNoteLib->drawShape(rectangle, PEN_COLOR);
-
-            prev_event = *event;
-        }
-
-        if (event->action == PEN_UP) {
-            Point p{event->x, event->y};
+            prev_event = event;
+        } else if (event.action == PEN_UP) {
+            Point p{prev_event.x, prev_event.y};
             Circle circle(p, PEN_RADIUS);
 
             mPineNoteLib->drawShape(circle, PEN_COLOR);
+
+            prev_event.x = 0;
+            prev_event.y = 0;
         }
+
+        mPineNoteLib->sendOsdBuffer();
     }
 }

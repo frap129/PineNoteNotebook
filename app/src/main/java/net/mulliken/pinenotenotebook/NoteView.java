@@ -1,6 +1,7 @@
 package net.mulliken.pinenotenotebook;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -11,6 +12,8 @@ import androidx.annotation.Nullable;
 public class NoteView extends View {
     private static final String TAG = "NoteView";
     private static int displayHeight = 0;
+
+    private Rect windowRect = new Rect();
 
     static {
         System.loadLibrary("pinenote");
@@ -58,11 +61,10 @@ public class NoteView extends View {
         int bottom = displayHeight - h - l[1];
         int top = displayHeight - l[1];
 
-        Log.d(TAG, "onSizeChanged:");
-        Log.d(TAG, "  left: " + left);
-        Log.d(TAG, "  top: " + top);
-        Log.d(TAG, "  right: " + right);
-        Log.d(TAG, "  bottom: " + bottom);
+        windowRect.left = left;
+        windowRect.top = top;
+        windowRect.right = right;
+        windowRect.bottom = bottom;
 
         nativeOnSizeChanged(left, top, right, bottom);
     }
@@ -72,6 +74,11 @@ public class NoteView extends View {
         super.onWindowFocusChanged(hasWindowFocus);
 
         nativeOnWindowFocusChanged(hasWindowFocus);
+
+        if (hasWindowFocus) {
+            nativeOnSizeChanged(
+                    windowRect.left, windowRect.top, windowRect.right, windowRect.bottom);
+        }
     }
 
     @Override
