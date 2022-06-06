@@ -19,6 +19,9 @@
 #include <android/log.h>
 #include <thread>
 
+#define PEN_RADIUS 3
+#define PEN_COLOR 0x00 // black
+
 using namespace std;
 
 class DisplayWorker {

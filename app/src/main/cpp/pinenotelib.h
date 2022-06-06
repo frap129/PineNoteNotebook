@@ -6,6 +6,7 @@
 
 #include "const.h"
 #include "raster_utils.h"
+#include "bitmap_utils.h"
 
 #include <mutex>
 #include <math.h>
@@ -21,11 +22,7 @@ public:
 
     ~PineNoteLib();
 
-    /*
-     * High level functions
-     */
-
-    void drawPoint(uint x, uint y, int radius, uint color);
+    void dumpToBitmap(const char * filename) const;
 
     void setDrawArea(int x1, int y1, int x2, int y2);
 

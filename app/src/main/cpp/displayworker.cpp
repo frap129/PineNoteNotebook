@@ -3,9 +3,6 @@
 //
 #include "displayworker.h"
 
-#define PEN_RADIUS 3
-#define PEN_COLOR 0x0f
-
 DisplayWorker::DisplayWorker() {
     ALOGD("DisplayWorker::DisplayWorker()");
 

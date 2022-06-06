@@ -26,7 +26,8 @@ add_library( # Sets the name of the library.
         pinenotelib.cpp
         penworker.cpp
         displayworker.cpp
-        raster_utils.cpp)
+        raster_utils.cpp
+        bitmap_utils.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

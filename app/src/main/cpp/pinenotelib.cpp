@@ -68,19 +68,30 @@ PineNoteLib::~PineNoteLib() {
     }
 }
 
-void PineNoteLib::drawPoint(uint x, uint y, int radius, uint color) {
-    uint fromX = x - radius;
-    uint fromY = y - radius;
-    uint toX = x + radius;
-    uint toY = y + radius;
+void PineNoteLib::dumpToBitmap(const char * filename) const {
+    BitmapImage image{};
+    image.create(ebc_info.width, ebc_info.height, 4, 32);
 
-    for (uint xx = fromX; xx <= toX; xx++) {
-        for (uint yy = fromY; yy <= toY; yy++) {
-            drawPixel(xx, yy, color);
+    for (int y = 0; y < ebc_info.height; y++) {
+        for (int x = 0; x < ebc_info.width; x++) {
+            unsigned int offset = y * ebc_info.width + x;
+
+            if (offset % 2 == 1) { // right pixel (most 4 significant bits)
+                offset -= 1;
+                offset = offset / 2;
+
+                uint8_t val = osd_buffer_base[offset] & 0x0f; // mask out the 4 least significant bits
+                image.bitmapBuffer[offset] = narrow_cast<char, int>(image.bitmapBuffer[offset] | val);
+            } else { // left pixel (least 4 significant bits)
+                offset = offset / 2;
+
+                uint8_t val = osd_buffer_base[offset] & 0xf0; // mask out the 4 most significant bits
+                image.bitmapBuffer[offset] = narrow_cast<char, int>(image.bitmapBuffer[offset] | val);
+            }
         }
     }
 
-    flashOverlay();
+    image.write(filename);
 }
 
 void PineNoteLib::setDrawArea(int x1, int y1, int x2, int y2) {
@@ -193,25 +204,19 @@ void PineNoteLib::drawPixel(uint x, uint y, uint8_t color) const {
         throw std::runtime_error("Invalid color");
     }
 
-    color = ~color;
+    unsigned int offset = y * ebc_info.width + x;
 
-    // Try with the y-based offset
-    uint offset = y * ebc_info.width + x;
-
-    // Try with the x-based offset
-//    uint offset = x * ebc_info.height + y;
-
-    if (offset % 2 == 1) {
+    if (offset % 2 == 1) { // right pixel (most 4 significant bits)
         offset -= 1;
         offset = offset / 2;
 
-        osd_buffer_base[offset] |= 0xf0;
-        osd_buffer_base[offset] &= color << 4;
-    } else {
+        osd_buffer_base[offset] |= 0xf0; // set the 4 most significant bits to white
+        osd_buffer_base[offset] &= color << 4; // set the 4 most significant bits to the color
+    } else { // left pixel (least 4 significant bits)
         offset = offset / 2;
 
-        osd_buffer_base[offset] |= 0x0f;
-        osd_buffer_base[offset] &= color;
+        osd_buffer_base[offset] |= 0x0f; // set the 4 least significant bits to white
+        osd_buffer_base[offset] &= color; // set the 4 least significant bits to the color
     }
 }
 
