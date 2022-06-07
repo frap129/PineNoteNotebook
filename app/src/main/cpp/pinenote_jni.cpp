@@ -1,4 +1,8 @@
 #include <jni.h>
+#include <stdio.h>
+#include <android/bitmap.h>
+#include <cstring>
+#include <unistd.h>
 #include <android/log.h>
 #include "pinenotelib.h"
 #include "displayworker.h"
@@ -110,4 +114,44 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeOnWindowFocusChanged(JNIEnv *e
         ALOGD("Java_net_mulliken_pinenotenotebook_NoteView_nativeOnWindowFocusChanged: Focus lost");
         disablePen();
     }
+}
+
+/**restore java bitmap (from JNI data)*/ //
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_net_mulliken_pinenotenotebook_NoteView_nativeGetBitmap(JNIEnv * env, jobject obj, jobject handle)
+{
+    BitmapImage bitmap = pineNotePen->getBitmap();
+    //creating a new bitmap to put the pixels into it - using Bitmap Bitmap.createBitmap (int width, int height, Bitmap.Config config) :
+    //
+    jclass bitmapCls = env->FindClass("android/graphics/Bitmap");
+    jmethodID createBitmapFunction = env->GetStaticMethodID(bitmapCls,
+                                                            "createBitmap",
+                                                            "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+    jstring configName = env->NewStringUTF("ARGB_8888");
+    jclass bitmapConfigClass = env->FindClass("android/graphics/Bitmap$Config");
+    jmethodID valueOfBitmapConfigFunction = env->GetStaticMethodID(
+            bitmapConfigClass, "valueOf",
+            "(Ljava/lang/String;)Landroid/graphics/Bitmap$Config;");
+    jobject bitmapConfig = env->CallStaticObjectMethod(bitmapConfigClass,
+                                                       valueOfBitmapConfigFunction, configName);
+    jobject newBitmap = env->CallStaticObjectMethod(bitmapCls,
+                                                    createBitmapFunction, bitmap.infoHeader.width,
+                                                    bitmap.infoHeader.width, bitmapConfig);
+    //
+    // putting the pixels into the new bitmap:
+    //
+    int ret;
+    void* bitmapPixels;
+    if ((ret = AndroidBitmap_lockPixels(env, newBitmap, &bitmapPixels)) < 0)
+    {
+        ALOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        return NULL;
+    }
+    uint32_t* newBitmapPixels = (uint32_t*) bitmapPixels;
+    memcpy(newBitmapPixels, bitmap.bitmapBuffer,
+           bitmap.bitmapBufferSize);
+    AndroidBitmap_unlockPixels(env, newBitmap);
+    //LOGD("returning the new bitmap");
+    return newBitmap;
 }

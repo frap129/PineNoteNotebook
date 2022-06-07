@@ -1,13 +1,19 @@
 package net.mulliken.pinenotenotebook;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 public class NoteView extends View {
     private static final String TAG = "NoteView";
@@ -19,6 +25,8 @@ public class NoteView extends View {
         System.loadLibrary("pinenote");
     }
 
+
+    private native Bitmap nativeGetBitmap();
     private native void nativeOnAttachedToWindow();
     private native void nativeOnDetachedFromWindow();
     private native void nativeOnSizeChanged(int left, int top, int right, int bottom);
@@ -27,6 +35,11 @@ public class NoteView extends View {
     public NoteView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
+
+    public Bitmap getInputAsBitmap() {
+        return nativeGetBitmap();
+    }
+
 
     @Override
     protected void onAttachedToWindow() {
@@ -38,6 +51,27 @@ public class NoteView extends View {
         displayHeight = displayMetrics.heightPixels;
 
         nativeOnAttachedToWindow();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ImageView imageView = new ImageView(getContext());
+                Drawable d = new BitmapDrawable(getResources(), nativeGetBitmap());
+                imageView.setImageDrawable(d);
+
+                AlertDialog dialog = new AlertDialog.Builder(getContext())
+                        .setView(imageView)
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create();
+
+                dialog.show();
+            }
+        }, 20000);
     }
 
     @Override

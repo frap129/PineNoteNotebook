@@ -1,8 +1,11 @@
 package net.mulliken.pinenotenotebook;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import java.nio.ByteBuffer;
 
 enum EPDModes {
     EPD_AUTO,
@@ -35,6 +38,8 @@ public class NoteJNI {
     private native void nativeSetDisplayMode(int mode);
 
     private native void nativeClearOverlay();
+
+    private native Bitmap nativeGetBitmap();
 
     private static NoteJNI instance;
 

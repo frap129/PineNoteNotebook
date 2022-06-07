@@ -68,7 +68,7 @@ PineNoteLib::~PineNoteLib() {
     }
 }
 
-void PineNoteLib::dumpToBitmap(const char * filename) const {
+BitmapImage PineNoteLib::getBitmap() const {
     BitmapImage image{};
     image.create(ebc_info.width, ebc_info.height, 4, 32);
 
@@ -91,6 +91,11 @@ void PineNoteLib::dumpToBitmap(const char * filename) const {
         }
     }
 
+    return image;
+}
+
+void PineNoteLib::dumpToBitmap(const char * filename) const {
+    BitmapImage image = getBitmap();
     image.write(filename);
 }
 

@@ -24,6 +24,8 @@ public:
 
     void dumpToBitmap(const char * filename) const;
 
+    BitmapImage getBitmap() const;
+
     void setDrawArea(int x1, int y1, int x2, int y2);
 
     void clearOverlay();
