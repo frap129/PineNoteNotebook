@@ -119,25 +119,26 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeOnWindowFocusChanged(JNIEnv *e
 /**restore java bitmap (from JNI data)*/ //
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_net_mulliken_pinenotenotebook_NoteView_nativeGetBitmap(JNIEnv * env, jobject obj, jobject handle)
+Java_net_mulliken_pinenotenotebook_NoteView_nativeGetBitmap(JNIEnv * env, jobject obj)
 {
     BitmapImage bitmap = pineNotePen->getBitmap();
-    //creating a new bitmap to put the pixels into it - using Bitmap Bitmap.createBitmap (int width, int height, Bitmap.Config config) :
+
     //
-    jclass bitmapCls = env->FindClass("android/graphics/Bitmap");
-    jmethodID createBitmapFunction = env->GetStaticMethodID(bitmapCls,
+    // creating a new bitmap to put the pixels into it - using Bitmap Bitmap.createBitmap (int width, int height, Bitmap.Config config) :
+    //
+    jclass bitmapClass = env->FindClass("android/graphics/Bitmap");
+    jmethodID createBitmapFunction = env->GetStaticMethodID(bitmapClass,
                                                             "createBitmap",
                                                             "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
     jstring configName = env->NewStringUTF("ARGB_8888");
     jclass bitmapConfigClass = env->FindClass("android/graphics/Bitmap$Config");
-    jmethodID valueOfBitmapConfigFunction = env->GetStaticMethodID(
-            bitmapConfigClass, "valueOf",
+    jmethodID valueOfBitmapConfigFunction = env->GetStaticMethodID(bitmapConfigClass, "valueOf",
             "(Ljava/lang/String;)Landroid/graphics/Bitmap$Config;");
     jobject bitmapConfig = env->CallStaticObjectMethod(bitmapConfigClass,
                                                        valueOfBitmapConfigFunction, configName);
-    jobject newBitmap = env->CallStaticObjectMethod(bitmapCls,
-                                                    createBitmapFunction, bitmap.infoHeader.width,
-                                                    bitmap.infoHeader.width, bitmapConfig);
+    jobject newBitmap = env->CallStaticObjectMethod(bitmapClass, createBitmapFunction, bitmap.infoHeader.width,
+                                                    bitmap.infoHeader.height, bitmapConfig);
+
     //
     // putting the pixels into the new bitmap:
     //
@@ -149,8 +150,7 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeGetBitmap(JNIEnv * env, jobjec
         return NULL;
     }
     uint32_t* newBitmapPixels = (uint32_t*) bitmapPixels;
-    memcpy(newBitmapPixels, bitmap.bitmapBuffer,
-           bitmap.bitmapBufferSize);
+    memcpy(newBitmapPixels, bitmap.bitmapBuffer, bitmap.bitmapBufferSize);
     AndroidBitmap_unlockPixels(env, newBitmap);
     //LOGD("returning the new bitmap");
     return newBitmap;
