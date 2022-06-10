@@ -51,7 +51,7 @@ public:
     RGBA32 *colorTable = nullptr;
     size_t colorTableSize;
     char *bitmapBuffer = nullptr;
-    size_t bitmapBufferSize;
+    size_t bytesInBuffer;
 
     ~BitmapImage();
 
@@ -60,6 +60,8 @@ public:
     void read(const char * filename);
 
     void write(const char * filename);
+
+    void set4BitPixel(unsigned int x, unsigned int y, uint8_t color);
 private:
     unsigned int bytesPerRow() const;
 };

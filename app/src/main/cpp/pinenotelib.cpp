@@ -70,24 +70,33 @@ PineNoteLib::~PineNoteLib() {
 
 BitmapImage PineNoteLib::getBitmap() const {
     BitmapImage image{};
-    image.create(ebc_info.width, ebc_info.height, 4, 32);
+    // The bitmap images width and height are swapped from that of the OSD bitmap
+    image.create(ebc_info.width, ebc_info.height, 4, 72);
 
+    // Starting at the bottom left corner of the screen (where left is the side with the black plastic)
+    // Y goes from 0 to ebc_info.height (left to right)
+    // X goes from 0 to ebc_info.width (bottom to top)
     for (int y = 0; y < ebc_info.height; y++) {
         for (int x = 0; x < ebc_info.width; x++) {
+            // Get the offset to the pixel in the OSD bitmap buffer (remember that each pixel is 4
+            // bits)
             unsigned int offset = y * ebc_info.width + x;
+            uint8_t color;
 
-            if (offset % 2 == 1) { // right pixel (most 4 significant bits)
+            if (offset % 2 == 1) { // We have selected the right pixel (most 4 significant bits)
                 offset -= 1;
                 offset = offset / 2;
 
-                uint8_t val = osd_buffer_base[offset] & 0x0f; // mask out the 4 least significant bits
-                image.bitmapBuffer[offset] = narrow_cast<char, int>(image.bitmapBuffer[offset] | val);
-            } else { // left pixel (least 4 significant bits)
+                // Get the pixel color (4 bits)
+                color = osd_buffer_base[offset] >> 4;
+            } else { // We have selected the left pixel (least 4 significant bits)
                 offset = offset / 2;
 
-                uint8_t val = osd_buffer_base[offset] & 0xf0; // mask out the 4 most significant bits
-                image.bitmapBuffer[offset] = narrow_cast<char, int>(image.bitmapBuffer[offset] | val);
+                // Get the pixel color (4 bits)
+                color = osd_buffer_base[offset] & 0x0F;
             }
+
+            image.set4BitPixel(x, y, color);
         }
     }
 

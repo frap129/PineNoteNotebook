@@ -25,8 +25,8 @@ void BitmapImage::create(int32_t width, int32_t height, uint16_t bits_per_pixel,
     infoHeader.horizontalResolution = ceil(pixels_per_inch / 0.0254);
     infoHeader.verticalResolution = ceil(pixels_per_inch / 0.0254);
 
-    bitmapBufferSize = bytesPerRow() * infoHeader.height;
-    bitmapBuffer = new char[bitmapBufferSize];
+    bytesInBuffer = bytesPerRow() * infoHeader.height;
+    bitmapBuffer = new char[bytesInBuffer];
 
     fileHeader.imageDataOffset = sizeof(fileHeader) + sizeof(infoHeader);
 
@@ -47,7 +47,7 @@ void BitmapImage::create(int32_t width, int32_t height, uint16_t bits_per_pixel,
         fileHeader.imageDataOffset += colorTableSize;
     }
 
-    fileHeader.fileSize = fileHeader.imageDataOffset + bitmapBufferSize;
+    fileHeader.fileSize = fileHeader.imageDataOffset + bytesInBuffer;
 }
 
 void BitmapImage::read(const char *filename) {
@@ -66,9 +66,9 @@ void BitmapImage::read(const char *filename) {
         throw runtime_error("only support 1, 4, 8, & 24bit colors");
 
     // Read the pixel data
-    bitmapBufferSize = bytesPerRow() * infoHeader.height;
-    bitmapBuffer = new char[bitmapBufferSize];
-    input.read((char *) bitmapBuffer, narrow_cast<int, size_t>(bitmapBufferSize));
+    bytesInBuffer = bytesPerRow() * infoHeader.height;
+    bitmapBuffer = new char[bytesInBuffer];
+    input.read((char *) bitmapBuffer, narrow_cast<int, size_t>(bytesInBuffer));
 
     input.close();
 }
@@ -83,7 +83,7 @@ void BitmapImage::write(const char *filename) {
     } else if (infoHeader.bitsPerPixel != 24)
         throw runtime_error("only support 1, 4, 8, & 24bit colors");
 
-    output.write((char *) bitmapBuffer, narrow_cast<int, size_t>(bitmapBufferSize));
+    output.write((char *) bitmapBuffer, narrow_cast<int, size_t>(bytesInBuffer));
 
     output.close();
 }
@@ -97,4 +97,30 @@ unsigned int BitmapImage::bytesPerRow() const {
         bytes_per_row++;
     }
     return bytes_per_row;
+}
+
+/*
+ * In order to use this function it is important to understand the layout of the bitmap.
+ * The bitmap is a linear array of pixels.
+ * The first pixel is the top left pixel of the image.
+ * The last pixel is the bottom right pixel of the image.
+ *
+ * x is associated with the horizontal axis.
+ * y is associated with the vertical axis.
+ */
+void BitmapImage::set4BitPixel(unsigned int x, unsigned int y, uint8_t color) {
+    if (infoHeader.bitsPerPixel != 4)
+        throw runtime_error("only support 4bit colors");
+
+    if (color > 15)
+        throw runtime_error("color must be between 0 and 15");
+
+    unsigned int y_index = y * infoHeader.width;
+    if (x % 2 == 0) {
+        bitmapBuffer[y_index + x / 2] &= 0x0F;
+        bitmapBuffer[y_index + x / 2] |= (color << 4);
+    } else {
+        bitmapBuffer[y_index + x / 2] &= 0xF0;
+        bitmapBuffer[y_index + x / 2] |= color;
+    }
 }
