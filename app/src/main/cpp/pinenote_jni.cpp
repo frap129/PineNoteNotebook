@@ -150,7 +150,7 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeGetBitmap(JNIEnv * env, jobjec
         return NULL;
     }
     uint32_t* newBitmapPixels = (uint32_t*) bitmapPixels;
-    memcpy(newBitmapPixels, bitmap.bitmapBuffer, bitmap.bitmapBufferSize);
+    memcpy(newBitmapPixels, bitmap.bitmapBuffer, bitmap.bytesInBuffer);
     AndroidBitmap_unlockPixels(env, newBitmap);
     //LOGD("returning the new bitmap");
     return newBitmap;
