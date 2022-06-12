@@ -71,7 +71,7 @@ public class NoteView extends View {
 
                 dialog.show();
             }
-        }, 20000);
+        }, 30000);
     }
 
     @Override

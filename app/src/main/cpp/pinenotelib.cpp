@@ -68,36 +68,50 @@ PineNoteLib::~PineNoteLib() {
     }
 }
 
-BitmapImage PineNoteLib::getBitmap() const {
-    BitmapImage image{};
-    image.create(ebc_info.width, ebc_info.height, 4, 32);
+uint32_t* PineNoteLib::getPixelData() const {
+    auto *pixelBuffer = (uint32_t*) malloc(ebc_info.width * ebc_info.height * sizeof(uint32_t));
 
     for (int y = 0; y < ebc_info.height; y++) {
         for (int x = 0; x < ebc_info.width; x++) {
             unsigned int offset = y * ebc_info.width + x;
+            float gray_4bit;
 
             if (offset % 2 == 1) { // right pixel (most 4 significant bits)
-                offset -= 1;
-                offset = offset / 2;
+                unsigned int osd_offset = offset - 1;
+                osd_offset /= 2;
 
-                uint8_t val = osd_buffer_base[offset] & 0x0f; // mask out the 4 least significant bits
-                image.bitmapBuffer[offset] = narrow_cast<char, int>(image.bitmapBuffer[offset] | val);
+                // Zero the first 4 bits to get pixel value
+                gray_4bit = (float) (osd_buffer_base[osd_offset] & 0x0f);
             } else { // left pixel (least 4 significant bits)
-                offset = offset / 2;
+                unsigned int osd_offset = offset / 2;
 
-                uint8_t val = osd_buffer_base[offset] & 0xf0; // mask out the 4 most significant bits
-                image.bitmapBuffer[offset] = narrow_cast<char, int>(image.bitmapBuffer[offset] | val);
+                // Zero the last 4 bits and shift right 4 to get pixel value
+                gray_4bit = (float) ((osd_buffer_base[osd_offset] & 0xf0) >> 4);
             }
+
+            // TODO: Set white pixel alpha to 0 and `continue` here
+
+            // Divide by 15 to get relative grey value, multiply by 255 to scale to 8 bits
+            auto gray_8bit = (uint32_t) ((gray_4bit / 15) * 255);
+
+            // Create A, R, G, B with channel data at the respective byte offset
+            uint32_t a = UINT32_MAX << 24;
+            uint32_t b = gray_8bit << 16;
+            uint32_t g = gray_8bit << 8;
+            uint32_t r = gray_8bit;
+
+            // Set pixel
+            pixelBuffer[offset] = a | b | g | r;
         }
     }
 
-    return image;
+    return pixelBuffer;
 }
 
-void PineNoteLib::dumpToBitmap(const char * filename) const {
+/* void PineNoteLib::dumpToBitmap(const char * filename) const {
     BitmapImage image = getBitmap();
     image.write(filename);
-}
+} */
 
 void PineNoteLib::setDrawArea(int x1, int y1, int x2, int y2) {
     // TODO: Set the draw area
