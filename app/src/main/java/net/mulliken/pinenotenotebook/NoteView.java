@@ -1,6 +1,7 @@
 package net.mulliken.pinenotenotebook;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -23,6 +24,7 @@ public class NoteView extends View {
     private native void nativeOnDetachedFromWindow();
     private native void nativeOnSizeChanged(int left, int top, int right, int bottom);
     private native void nativeOnWindowFocusChanged(boolean hasFocus);
+    private native Bitmap nativeGetFullOverlayBitmap();
 
     public NoteView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -86,5 +88,9 @@ public class NoteView extends View {
         super.onDraw(canvas);
 
         // TODO: draw the note
+    }
+
+    public Bitmap getFullOverlayBitmap() {
+        return nativeGetFullOverlayBitmap();
     }
 }

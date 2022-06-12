@@ -65,6 +65,8 @@ public:
 
     void drawShape(Shape& shape, unsigned int color) const;
 
+    uint32_t *getPixelData() const;
+
 private:
     static PineNoteLib *instance;
 
@@ -82,6 +84,7 @@ private:
 
     // pointer to where the EBC is mapped in memory
     uint8_t *ebc_base = nullptr;
+
 };
 
 #endif // PINENOTELIB_H
