@@ -39,6 +39,8 @@ public class NoteJNI {
 
     private native Bitmap nativeGetFullOverlayBitmap();
 
+    private native Bitmap nativeGetOverlayBitmap();
+
     private static NoteJNI instance;
 
     public static NoteJNI getInstance() {

@@ -25,6 +25,7 @@ public class NoteView extends View {
     private native void nativeOnSizeChanged(int left, int top, int right, int bottom);
     private native void nativeOnWindowFocusChanged(boolean hasFocus);
     private native Bitmap nativeGetFullOverlayBitmap();
+    private native Bitmap nativeGetOverlayBitmap();
 
     public NoteView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -92,5 +93,9 @@ public class NoteView extends View {
 
     public Bitmap getFullOverlayBitmap() {
         return nativeGetFullOverlayBitmap();
+    }
+
+    public Bitmap getOverlayBitmap() {
+        return nativeGetOverlayBitmap();
     }
 }

@@ -65,7 +65,13 @@ public:
 
     void drawShape(Shape& shape, unsigned int color) const;
 
-    uint32_t *getPixelData() const;
+    uint32_t *getFullPixelData() const;
+
+    // The area of the screen that is being drawn to
+    int display_x1{};
+    int display_y1{};
+    int display_x2{};
+    int display_y2{};
 
 private:
     static PineNoteLib *instance;
@@ -76,15 +82,12 @@ private:
 
     void clearOsdBuffer() const;
 
-    // The area of the screen that is being drawn to
-    int display_x1{};
-    int display_y1{};
-    int display_x2{};
-    int display_y2{};
-
     // pointer to where the EBC is mapped in memory
     uint8_t *ebc_base = nullptr;
 
+    uint32_t *getBoundedPixelData() const;
+
+    uint32_t getArgbPixelAt(unsigned int offset, int x, int y) const;
 };
 
 #endif // PINENOTELIB_H
