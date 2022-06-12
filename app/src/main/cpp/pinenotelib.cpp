@@ -89,7 +89,11 @@ uint32_t* PineNoteLib::getPixelData() const {
                 gray_4bit = (float) ((osd_buffer_base[osd_offset] & 0xf0) >> 4);
             }
 
-            // TODO: Set white pixel alpha to 0 and `continue` here
+            // If pixel is white, set to transparent and skip pixel creation
+            if (gray_4bit == 0x0f) {
+                pixelBuffer[offset] = 0;
+                continue;
+            }
 
             // Divide by 15 to get relative grey value, multiply by 255 to scale to 8 bits
             auto gray_8bit = (uint32_t) ((gray_4bit / 15) * 255);
