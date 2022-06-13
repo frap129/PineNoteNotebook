@@ -148,7 +148,7 @@ extern "C"
 JNIEXPORT jobject JNICALL
 Java_net_mulliken_pinenotenotebook_NoteView_nativeGetOverlayBitmap(JNIEnv *env, jobject obj)
 {
-    uint32_t *pixelData = pineNotePen->getFullPixelData();
+    uint32_t *pixelData = pineNotePen->getBoundedPixelData();
     int _width = pineNotePen->display_y2 - pineNotePen->display_y1;
     int _height = pineNotePen->display_x2 - pineNotePen->display_x1;
 

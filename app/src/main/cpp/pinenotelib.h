@@ -73,6 +73,8 @@ public:
     int display_x2{};
     int display_y2{};
 
+    uint32_t *getBoundedPixelData() const;
+
 private:
     static PineNoteLib *instance;
 
@@ -84,8 +86,6 @@ private:
 
     // pointer to where the EBC is mapped in memory
     uint8_t *ebc_base = nullptr;
-
-    uint32_t *getBoundedPixelData() const;
 
     uint32_t getArgbPixelAt(unsigned int offset, int x, int y) const;
 };
