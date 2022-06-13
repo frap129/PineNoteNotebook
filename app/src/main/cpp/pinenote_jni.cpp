@@ -141,7 +141,10 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeGetFullOverlayBitmap(JNIEnv *e
     int _width = pineNotePen->ebc_info.width;
     int _height = pineNotePen->ebc_info.height;
 
-    return createBitmapFromPixelData(env, _width, _height, pixelData);
+    jobject bitmap = createBitmapFromPixelData(env, _width, _height, pixelData);
+    free(pixelData);
+
+    return bitmap;
 }
 
 extern "C"
@@ -152,5 +155,8 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeGetOverlayBitmap(JNIEnv *env, 
     int _width = pineNotePen->display_y2 - pineNotePen->display_y1;
     int _height = pineNotePen->display_x2 - pineNotePen->display_x1;
 
-    return createBitmapFromPixelData(env, _width, _height, pixelData);
+    jobject bitmap = createBitmapFromPixelData(env, _width, _height, pixelData);
+    free(pixelData);
+
+    return bitmap;
 }
