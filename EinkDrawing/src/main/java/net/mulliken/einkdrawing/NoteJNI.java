@@ -39,6 +39,10 @@ public class NoteJNI {
 
     private native Bitmap nativeGetOverlayBitmap();
 
+    private native void nativeSetFullOverlayBitmap(Bitmap bitmap);
+
+    private native void nativeSetOverlayBitmap(Bitmap bitmap);
+
     private native void nativeSetColor(int color);
 
     private native void nativeSetWidth(int width);

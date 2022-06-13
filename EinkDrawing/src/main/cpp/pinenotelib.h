@@ -66,15 +66,19 @@ public:
 
     void drawShape(Shape& shape, unsigned int color) const;
 
-    uint32_t *getFullPixelData() const;
-
     // The area of the screen that is being drawn to
     int display_x1{};
     int display_y1{};
     int display_x2{};
     int display_y2{};
 
+    uint32_t *getFullPixelData() const;
+
     uint32_t *getBoundedPixelData() const;
+
+    void setBoundedPixelData(uint32_t *pixelData) const;
+
+    void setFullPixelData(uint32_t *pixelData) const;
 
 private:
     static PineNoteLib *instance;
@@ -89,6 +93,8 @@ private:
     uint8_t *ebc_base = nullptr;
 
     uint32_t getArgbPixelAt(unsigned int offset, int x, int y) const;
+
+    void setArgbPixelAt(unsigned int offset, int x, int y, uint32_t pixel) const;
 };
 
 #endif // PINENOTELIB_H

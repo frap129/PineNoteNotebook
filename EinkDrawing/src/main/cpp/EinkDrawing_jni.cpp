@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <android/log.h>
+#include <android/bitmap.h>
 #include "pinenotelib.h"
 #include "displayworker.h"
 #include "penworker.h"
@@ -181,4 +182,38 @@ Java_net_mulliken_einkdrawing_NoteView_nativeSetWidth(JNIEnv *env, jobject obj, 
     if (mState != nullptr) {
         mState->inputWidth = width;
     }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_net_mulliken_einkdrawing_NoteView_nativeSetOverlayBitmap(JNIEnv * env,
+                                    jobject obj, jobject bitmap)
+{
+    AndroidBitmapInfo androidBitmapInfo ;
+    void* pixels;
+    AndroidBitmap_getInfo(env, bitmap, &androidBitmapInfo);
+    AndroidBitmap_lockPixels(env, bitmap, &pixels);
+    auto* pixelData = (uint32_t *) pixels;
+
+    if (pineNotePen != nullptr) {
+        pineNotePen->setBoundedPixelData(pixelData);
+    }
+    AndroidBitmap_unlockPixels(env, bitmap);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_net_mulliken_einkdrawing_NoteView_nativeSetFullOverlayBitmap(JNIEnv * env,
+                                    jobject obj, jobject bitmap)
+{
+    AndroidBitmapInfo androidBitmapInfo ;
+    void* pixels;
+    AndroidBitmap_getInfo(env, bitmap, &androidBitmapInfo);
+    AndroidBitmap_lockPixels(env, bitmap, &pixels);
+    auto* pixelData = (uint32_t *) pixels;
+
+    if (pineNotePen != nullptr) {
+        pineNotePen->setFullPixelData(pixelData);
+    }
+    AndroidBitmap_unlockPixels(env, bitmap);
 }

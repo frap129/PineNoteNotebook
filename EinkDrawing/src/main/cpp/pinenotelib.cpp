@@ -156,6 +156,37 @@ uint32_t* PineNoteLib::getBoundedPixelData() const {
     return pixelBuffer;
 }
 
+void PineNoteLib::setArgbPixelAt(unsigned int offset, int x, int y, uint32_t pixel) const {
+    uint8_t alpha = pixel >> 24;
+
+    // Mask out the last byte to get 8bit color value, scale to 4 bits
+    uint8_t gray_8bit = pixel & 0x000000ff;
+    uint8_t gray_4bit = (gray_8bit / 255)  * 15;
+
+    // Draw colored pixels
+    if (alpha != 0) {
+        drawPixel(x, y, gray_4bit);
+    }
+}
+
+void PineNoteLib::setFullPixelData(uint32_t* pixelData) const {
+    for (int y = 0; y < ebc_info.height; y++) {
+        for (int x = 0; x < ebc_info.width; x++) {
+            unsigned int offset = y * ebc_info.width + x;
+            setArgbPixelAt(offset, x, y, pixelData[offset]);
+        }
+    }
+}
+
+void PineNoteLib::setBoundedPixelData(uint32_t* pixelData) const {
+    for (int y = display_y1; y < display_y2; y++) {
+        for (int x = display_x1; x < display_x2; x++) {
+            unsigned int offset = y * ebc_info.width + x;
+            setArgbPixelAt(offset, x, y, pixelData[offset]);
+        }
+    }
+}
+
 void PineNoteLib::setDrawArea(int x1, int y1, int x2, int y2) {
     // TODO: Set the draw area
 

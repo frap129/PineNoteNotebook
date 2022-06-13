@@ -28,11 +28,15 @@ class NoteView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private external fun nativeOnWindowFocusChanged(hasFocus: Boolean)
     private external fun nativeGetFullOverlayBitmap(): Bitmap?
     private external fun nativeGetOverlayBitmap(): Bitmap?
+    private external fun nativeSetFullOverlayBitmap(bitmap: Bitmap)
+    private external fun nativeSetOverlayBitmap(bitmap: Bitmap)
     private external fun nativeSetColor(color: Int)
     private external fun nativeSetWidth(width: Int)
 
     fun getFullOverlayBitmap(): Bitmap? = nativeGetFullOverlayBitmap()
     fun getOverlayBitmap(): Bitmap? = nativeGetOverlayBitmap()
+    fun setFullOverlayBitmap(bitmap: Bitmap) = nativeSetFullOverlayBitmap(bitmap)
+    fun setOverlayBitmap(bitmap: Bitmap) = nativeSetOverlayBitmap(bitmap)
     fun setPenColor(color: Int) = nativeSetColor(color)
     fun setPenWidth(color: Int) = nativeSetWidth(width)
 
