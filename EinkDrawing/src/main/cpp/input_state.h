@@ -6,7 +6,7 @@
 #define PINENOTE_NOTEBOOK_INPUT_STATE_H
 
 struct InputState {
-    unsigned int inputWidth = 1;
+    unsigned int inputWidth = 2;
     uint8_t inputColor = 0x00;
 };
 

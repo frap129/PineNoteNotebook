@@ -19,7 +19,7 @@
 #include <android/log.h>
 #include <thread>
 
-#define PEN_PRESSURE_SCALE 925
+#define PEN_PRESSURE_SCALE 900
 
 using namespace std;
 

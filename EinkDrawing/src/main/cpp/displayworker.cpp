@@ -2,6 +2,7 @@
 // Created by mulliken on 5/17/22.
 //
 #include "displayworker.h"
+#include <cmath>
 
 DisplayWorker::DisplayWorker(InputState* state) {
     ALOGD("DisplayWorker::DisplayWorker()");
@@ -92,5 +93,9 @@ void DisplayWorker::run() {
 }
 
 unsigned int DisplayWorker::getPenRadius(unsigned int pressure) {
-    return pressure / PEN_PRESSURE_SCALE * mState->inputWidth;
+    int radius = log((double) pressure / PEN_PRESSURE_SCALE) * mState->inputWidth;
+    if (radius < 1) {
+        radius = mState->inputWidth;
+    }
+    return radius;
 }
