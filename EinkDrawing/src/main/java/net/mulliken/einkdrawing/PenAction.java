@@ -1,4 +1,4 @@
-package net.mulliken.pinenotenotebook;
+package net.mulliken.einkdrawing;
 
 public enum PenAction {
     PEN_UP,

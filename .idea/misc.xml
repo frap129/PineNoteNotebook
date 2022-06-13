@@ -3,20 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../../layout/custom_preview.xml" value="0.3328125" />
-        <entry key="../../Android/Sdk/platforms/android-30/data/res/drawable/control_background_40dp_material.xml" value="0.3745" />
-        <entry key="../../Android/Sdk/platforms/android-30/data/res/drawable/ic_spinner_caret.xml" value="0.3745" />
-        <entry key="../../Android/Sdk/platforms/android-30/data/res/drawable/spinner_background_material.xml" value="0.3745" />
-        <entry key="../../Android/Sdk/platforms/android-30/data/res/drawable/spinner_dropdown_background.xml" value="0.3745" />
-        <entry key="app/src/main/res/drawable-v24/arrow_down_drop_circle.xml" value="0.3745" />
-        <entry key="app/src/main/res/drawable/eink_spinner_background.xml" value="0.3735" />
-        <entry key="app/src/main/res/drawable/eink_spinner_ui.xml" value="0.483" />
-        <entry key="app/src/main/res/drawable/eink_ui_box.xml" value="0.3735" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.5401041666666667" />
-        <entry key="app/src/main/res/layout/content_main.xml" value="0.5401041666666667" />
-        <entry key="app/src/main/res/layout/fragment_first.xml" value="0.5401041666666667" />
-        <entry key="app/src/main/res/layout/fragment_second.xml" value="0.5401041666666667" />
-        <entry key="app/src/main/res/menu/menu_main.xml" value="0.5401041666666667" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3078125" />
       </map>
     </option>
   </component>

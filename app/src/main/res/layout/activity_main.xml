@@ -37,7 +37,7 @@
 
     </LinearLayout>
 
-    <net.mulliken.pinenotenotebook.NoteView
+    <net.mulliken.einkdrawing.NoteView
         android:id="@+id/noteView"
         android:layout_width="0dp"
         android:layout_height="0dp"

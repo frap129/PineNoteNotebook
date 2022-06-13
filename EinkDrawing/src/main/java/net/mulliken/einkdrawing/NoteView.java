@@ -1,4 +1,4 @@
-package net.mulliken.pinenotenotebook;
+package net.mulliken.einkdrawing;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,7 +17,7 @@ public class NoteView extends View {
     private Rect windowRect = new Rect();
 
     static {
-        System.loadLibrary("pinenote");
+        System.loadLibrary("EinkDrawing");
     }
 
     private native void nativeOnAttachedToWindow();

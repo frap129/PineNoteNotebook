@@ -77,16 +77,16 @@ void disablePen() {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_net_mulliken_pinenotenotebook_NoteView_nativeOnAttachedToWindow(JNIEnv *env, jobject thiz
+Java_net_mulliken_einkdrawing_NoteView_nativeOnAttachedToWindow(JNIEnv *env, jobject thiz
 ) {
-    ALOGD("Java_net_mulliken_pinenotenotebook_NoteView_nativeOnAttachedToWindow: Attaching to window");
+    ALOGD("Java_net_mulliken_einkdrawing_NoteView_nativeOnAttachedToWindow: Attaching to window");
     mEnv = env;
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_net_mulliken_pinenotenotebook_NoteView_nativeOnDetachedFromWindow(JNIEnv *env, jobject thiz) {
-    ALOGD("Java_net_mulliken_pinenotenotebook_NoteView_nativeOnDetachedFromWindow: Detaching from window");
+Java_net_mulliken_einkdrawing_NoteView_nativeOnDetachedFromWindow(JNIEnv *env, jobject thiz) {
+    ALOGD("Java_net_mulliken_einkdrawing_NoteView_nativeOnDetachedFromWindow: Detaching from window");
     mEnv = env;
 
     disablePen();
@@ -94,7 +94,7 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeOnDetachedFromWindow(JNIEnv *e
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_net_mulliken_pinenotenotebook_NoteView_nativeOnSizeChanged(JNIEnv *env, jobject thiz,
+Java_net_mulliken_einkdrawing_NoteView_nativeOnSizeChanged(JNIEnv *env, jobject thiz,
                                                                 jint left, jint top, jint right,
                                                                 jint bottom) {
     if (pineNotePen == nullptr) {
@@ -107,13 +107,13 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeOnSizeChanged(JNIEnv *env, job
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_net_mulliken_pinenotenotebook_NoteView_nativeOnWindowFocusChanged(JNIEnv *env, jobject thiz,
+Java_net_mulliken_einkdrawing_NoteView_nativeOnWindowFocusChanged(JNIEnv *env, jobject thiz,
                                                                        jboolean has_focus) {
     if (has_focus) {
-        ALOGD("Java_net_mulliken_pinenotenotebook_NoteView_nativeOnWindowFocusChanged: Focus gained");
+        ALOGD("Java_net_mulliken_einkdrawing_NoteView_nativeOnWindowFocusChanged: Focus gained");
         enablePen();
     } else {
-        ALOGD("Java_net_mulliken_pinenotenotebook_NoteView_nativeOnWindowFocusChanged: Focus lost");
+        ALOGD("Java_net_mulliken_einkdrawing_NoteView_nativeOnWindowFocusChanged: Focus lost");
         disablePen();
     }
 }
@@ -141,7 +141,7 @@ jobject createBitmapFromPixelData(JNIEnv *env, int _width, int _height, const ui
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_net_mulliken_pinenotenotebook_NoteView_nativeGetFullOverlayBitmap(JNIEnv *env, jobject obj)
+Java_net_mulliken_einkdrawing_NoteView_nativeGetFullOverlayBitmap(JNIEnv *env, jobject obj)
 {
     uint32_t *pixelData = pineNotePen->getFullPixelData();
     int _width = pineNotePen->ebc_info.width;
@@ -155,7 +155,7 @@ Java_net_mulliken_pinenotenotebook_NoteView_nativeGetFullOverlayBitmap(JNIEnv *e
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_net_mulliken_pinenotenotebook_NoteView_nativeGetOverlayBitmap(JNIEnv *env, jobject obj)
+Java_net_mulliken_einkdrawing_NoteView_nativeGetOverlayBitmap(JNIEnv *env, jobject obj)
 {
     uint32_t *pixelData = pineNotePen->getBoundedPixelData();
     int _width = pineNotePen->display_y2 - pineNotePen->display_y1;
