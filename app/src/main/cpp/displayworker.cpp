@@ -3,7 +3,7 @@
 //
 #include "displayworker.h"
 
-DisplayWorker::DisplayWorker() {
+DisplayWorker::DisplayWorker(InputState* state) {
     ALOGD("DisplayWorker::DisplayWorker()");
 
     // Get a pointer to the PineNoteLib
@@ -11,6 +11,8 @@ DisplayWorker::DisplayWorker() {
 
     // Create the thread
     display_thread = std::thread(&DisplayWorker::run, this);
+
+    mState = state;
 }
 
 DisplayWorker::~DisplayWorker() {
@@ -42,6 +44,8 @@ void DisplayWorker::run() {
         equeue.pop();
         lck.unlock();
 
+        ALOGD("Pen pressure: %u", event.pressure);
+
         if (event.action == EXIT_WORKER)
             break;
 
@@ -50,9 +54,9 @@ void DisplayWorker::run() {
 
         if (event.action == PEN_DOWN) {
             Point p{event.x, event.y};
-            Circle circle(p, PEN_RADIUS);
+            Circle circle(p, getPenRadius(event.pressure));
 
-            mPineNoteLib->drawShape(circle, PEN_COLOR);
+            mPineNoteLib->drawShape(circle, mState->inputColor);
 
             prev_event = event;
         } else if (event.action == PEN_MOVE) {
@@ -68,16 +72,16 @@ void DisplayWorker::run() {
             Point p2{event.x, event.y};
             LineSegment line(p, p2);
             for (auto point : line.as_points()) {
-                Circle circle(point, PEN_RADIUS);
-                mPineNoteLib->drawShape(circle, PEN_COLOR);
+                Circle circle(point, getPenRadius(event.pressure));
+                mPineNoteLib->drawShape(circle, mState->inputColor);
             }
 
             prev_event = event;
         } else if (event.action == PEN_UP) {
             Point p{prev_event.x, prev_event.y};
-            Circle circle(p, PEN_RADIUS);
+            Circle circle(p, getPenRadius(event.pressure));
 
-            mPineNoteLib->drawShape(circle, PEN_COLOR);
+            mPineNoteLib->drawShape(circle, mState->inputColor);
 
             prev_event.x = 0;
             prev_event.y = 0;
@@ -85,4 +89,8 @@ void DisplayWorker::run() {
 
         mPineNoteLib->sendOsdBuffer();
     }
+}
+
+unsigned int DisplayWorker::getPenRadius(unsigned int pressure) {
+    return pressure / PEN_PRESSURE_SCALE * mState->inputWidth;
 }

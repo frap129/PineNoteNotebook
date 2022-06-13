@@ -7,6 +7,7 @@
 PineNoteLib *pineNotePen = nullptr;
 PenWorker *penWorker = nullptr;
 DisplayWorker *displayWorker = nullptr;
+InputState* mState = nullptr;
 
 JNIEnv *mEnv;
 
@@ -36,12 +37,15 @@ void enablePen() {
     pineNotePen = PineNoteLib::getInstance();
     pineNotePen->enableOverlay();
 
+    mState = static_cast<InputState *>(malloc(sizeof(InputState)));
+    mState = new InputState;
+
     if (penWorker == nullptr) {
         penWorker = new PenWorker();
     }
 
     if (displayWorker == nullptr) {
-        displayWorker = new DisplayWorker();
+        displayWorker = new DisplayWorker(mState);
 
         // We will assume that if it is not null, it is already initialized.
         penWorker->registerListener([](pen_event_t event) {
@@ -67,6 +71,8 @@ void disablePen() {
 
     pineNotePen->disableOverlay();
     PineNoteLib::destroyInstance();
+
+    free(mState);
 }
 
 extern "C"

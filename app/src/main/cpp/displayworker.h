@@ -19,14 +19,13 @@
 #include <android/log.h>
 #include <thread>
 
-#define PEN_RADIUS 3
-#define PEN_COLOR 0x00 // black
+#define PEN_PRESSURE_SCALE 925
 
 using namespace std;
 
 class DisplayWorker {
 public:
-    DisplayWorker();
+    DisplayWorker(InputState* state);
 
     ~DisplayWorker();
 
@@ -43,7 +42,11 @@ private:
 
     pen_event_t prev_event{};
 
+    InputState* mState;
+
     void run();
+
+    unsigned int getPenRadius(unsigned int pressure);
 };
 
 #endif //DISPLAYWORKER_H

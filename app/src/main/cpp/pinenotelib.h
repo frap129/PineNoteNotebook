@@ -7,6 +7,7 @@
 #include "const.h"
 #include "raster_utils.h"
 #include "bitmap_utils.h"
+#include "input_state.h"
 
 #include <mutex>
 #include <math.h>
