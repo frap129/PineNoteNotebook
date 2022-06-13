@@ -166,3 +166,19 @@ Java_net_mulliken_einkdrawing_NoteView_nativeGetOverlayBitmap(JNIEnv *env, jobje
 
     return bitmap;
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_net_mulliken_einkdrawing_NoteView_nativeSetColor(JNIEnv *env, jobject obj, jint color) {
+    if (mState != nullptr) {
+        mState->inputColor = color;
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_net_mulliken_einkdrawing_NoteView_nativeSetWidth(JNIEnv *env, jobject obj, jint width) {
+    if (mState != nullptr) {
+        mState->inputWidth = width;
+    }
+}
