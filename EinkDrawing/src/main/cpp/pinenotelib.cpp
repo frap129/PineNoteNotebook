@@ -149,7 +149,8 @@ uint32_t* PineNoteLib::getBoundedPixelData() const {
     for (int y = display_y1; y < display_y2; y++) {
         for (int x = display_x1; x < display_x2; x++) {
             unsigned int offset = y * ebc_info.width + x;
-            pixelBuffer[offset] = getArgbPixelAt(offset, x, y);
+            unsigned int relativeOffset = (y - display_y1) * ebc_info.width + (x - display_x1);
+            pixelBuffer[relativeOffset] = getArgbPixelAt(offset, x, y);
         }
     }
 
@@ -182,7 +183,8 @@ void PineNoteLib::setBoundedPixelData(uint32_t* pixelData) const {
     for (int y = display_y1; y < display_y2; y++) {
         for (int x = display_x1; x < display_x2; x++) {
             unsigned int offset = y * ebc_info.width + x;
-            setArgbPixelAt(offset, x, y, pixelData[offset]);
+            unsigned int relativeOffset = (y - display_y1) * ebc_info.width + (x - display_x1);
+            setArgbPixelAt(offset, x, y, pixelData[relativeOffset]);
         }
     }
 }
