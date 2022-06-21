@@ -8,10 +8,7 @@ DisplayWorker::DisplayWorker(InputState* state) {
     ALOGD("DisplayWorker::DisplayWorker()");
 
     // Get a pointer to the PineNoteLib
-    mPineNoteLib = PineNoteLib::getInstance();
-
-    // Create the thread
-    display_thread = std::thread(&DisplayWorker::run, this);
+    mPineNoteLib = PineNoteLib::getInstance();;
 
     mState = state;
 }
@@ -25,6 +22,11 @@ DisplayWorker::~DisplayWorker() {
     if (display_thread.joinable()) {
         display_thread.join();
     }
+}
+
+void DisplayWorker::startWorker() {
+    // Create the thread
+    display_thread = std::thread(&DisplayWorker::run, this);
 }
 
 void DisplayWorker::onPenEvent(pen_event_t pen_event) {

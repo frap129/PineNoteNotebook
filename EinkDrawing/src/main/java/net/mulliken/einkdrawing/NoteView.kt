@@ -26,6 +26,8 @@ class NoteView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private external fun nativeOnDetachedFromWindow()
     private external fun nativeOnSizeChanged(left: Int, top: Int, right: Int, bottom: Int)
     private external fun nativeOnWindowFocusChanged(hasFocus: Boolean)
+    private external fun nativeStartPen()
+    private external fun nativeStopPen()
     private external fun nativeGetFullOverlayBitmap(): Bitmap?
     private external fun nativeGetOverlayBitmap(): Bitmap?
     private external fun nativeSetFullOverlayBitmap(bitmap: Bitmap)
@@ -86,7 +88,5 @@ class NoteView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-
-        // TODO: draw the note
     }
 }

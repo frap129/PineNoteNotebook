@@ -34,19 +34,25 @@ void ThrowJNIException(const char *eFile, int eLine, const char *eMessage) {
 #define THROW_JAVA_EXCEPTION(_INFO_) \
     ThrowJNIException(__FILE__, __LINE__, _INFO_)
 
-void enablePen() {
+void startPen() {
     pineNotePen = PineNoteLib::getInstance();
     pineNotePen->enableOverlay();
 
     mState = static_cast<InputState *>(malloc(sizeof(InputState)));
     mState = new InputState;
 
-    if (penWorker == nullptr) {
-        penWorker = new PenWorker();
-    }
-
     if (displayWorker == nullptr) {
         displayWorker = new DisplayWorker(mState);
+    }
+}
+
+void enablePen() {
+    if (displayWorker != nullptr) {
+        displayWorker->startWorker();
+    }
+
+    if (penWorker == nullptr) {
+        penWorker = new PenWorker();
 
         // We will assume that if it is not null, it is already initialized.
         penWorker->registerListener([](pen_event_t event) {
@@ -56,6 +62,27 @@ void enablePen() {
 }
 
 void disablePen() {
+    if (mState != nullptr) {
+        uint32_t *pixelData = pineNotePen->getFullPixelData();
+        mState->prevPixelData = *pixelData;
+        free(pixelData);
+    }
+
+    if (penWorker != nullptr) {
+        delete penWorker;
+        penWorker = nullptr;
+    }
+
+    if (displayWorker != nullptr) {
+        pen_event_t event{};
+        event.action = EXIT_WORKER;
+        displayWorker->onPenEvent(event);
+    }
+}
+
+void stopPen() {
+    disablePen();
+
     if (displayWorker != nullptr) {
         pen_event_t event{};
         event.action = EXIT_WORKER;
@@ -63,11 +90,6 @@ void disablePen() {
 
         delete displayWorker;
         displayWorker = nullptr;
-    }
-
-    if (penWorker != nullptr) {
-        delete penWorker;
-        penWorker = nullptr;
     }
 
     pineNotePen->disableOverlay();
@@ -82,6 +104,7 @@ Java_net_mulliken_einkdrawing_NoteView_nativeOnAttachedToWindow(JNIEnv *env, job
 ) {
     ALOGD("Java_net_mulliken_einkdrawing_NoteView_nativeOnAttachedToWindow: Attaching to window");
     mEnv = env;
+    startPen();
 }
 
 extern "C"
@@ -90,7 +113,7 @@ Java_net_mulliken_einkdrawing_NoteView_nativeOnDetachedFromWindow(JNIEnv *env, j
     ALOGD("Java_net_mulliken_einkdrawing_NoteView_nativeOnDetachedFromWindow: Detaching from window");
     mEnv = env;
 
-    disablePen();
+    stopPen();
 }
 
 extern "C"
@@ -117,6 +140,18 @@ Java_net_mulliken_einkdrawing_NoteView_nativeOnWindowFocusChanged(JNIEnv *env, j
         ALOGD("Java_net_mulliken_einkdrawing_NoteView_nativeOnWindowFocusChanged: Focus lost");
         disablePen();
     }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_net_mulliken_einkdrawing_NoteView_nativeStartPen(JNIEnv *env, jobject thiz) {
+    startPen();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_net_mulliken_einkdrawing_NoteView_nativeStopPen(JNIEnv *env, jobject thiz) {
+    stopPen();
 }
 
 jobject createBitmapFromPixelData(JNIEnv *env, int _width, int _height, const uint32_t* pixelData) {

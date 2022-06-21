@@ -22,9 +22,9 @@ using namespace std;
 class PenWorker {
 public:
     PenWorker();
-
     ~PenWorker();
 
+    void run();
     void registerListener(const function<void(pen_event_t)> &listener);
 
 private:
@@ -34,10 +34,10 @@ private:
     fd_set fds{};
     int event_fd;
     int pipefd[2]{};
+    bool exitWorker = false;
 
     unsigned int prev_pressure = 0;
 
-    void run();
 };
 
 #endif //PENWORKER_H

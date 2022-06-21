@@ -8,6 +8,7 @@
 struct InputState {
     unsigned int inputWidth = 2;
     uint8_t inputColor = 0x00;
+    uint32_t prevPixelData;
 };
 
 #endif //PINENOTE_NOTEBOOK_INPUT_STATE_H

@@ -26,27 +26,22 @@ using namespace std;
 class DisplayWorker {
 public:
     DisplayWorker(InputState* state);
-
     ~DisplayWorker();
 
     void onPenEvent(pen_event_t pen_event);
+    void startWorker();
 
 private:
     PineNoteLib *mPineNoteLib;
-
     queue<pen_event_t> equeue{};
     mutex emutex;
     condition_variable econd;
-
     thread display_thread;
-
     pen_event_t prev_event{};
-
     InputState* mState;
 
-    void run();
-
     unsigned int getPenRadius(unsigned int pressure);
+    void run();
 };
 
 #endif //DISPLAYWORKER_H
